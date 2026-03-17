@@ -54,23 +54,22 @@ def verify_added_to_cart(driver, wait, expected_count="1"):
     cart = wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, ".cart-count-bubble"))
     )
-    wait.until(lambda d: expected_count in cart.text)
+    assert expected_count in cart.text
 
 
-def driver_quit(driver):
+def teardown_driver(driver):
     driver.quit()
 
 def test_add_to_cart():
     driver, wait = setup_driver()
-
-    login(driver, wait)
-    search_product(driver, wait, "Snowboard")
-    select_first_product(driver, wait)
-    add_to_cart(driver, wait)
-    verify_added_to_cart(driver, wait, "1")
-    print("Test Passed: Product added to the cart")
-
-    driver_quit(driver)
+    try:
+        login(driver, wait)
+        search_product(driver, wait, "Snowboard")
+        select_first_product(driver, wait)
+        add_to_cart(driver, wait)
+        verify_added_to_cart(driver, wait, "1")
+    finally:
+        teardown_driver(driver)
 
 
 if __name__ == "__main__":
